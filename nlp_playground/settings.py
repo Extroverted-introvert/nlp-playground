@@ -31,12 +31,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'request_handler',
+    'register',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions', 
+    'crispy_forms',  
+    'rest_framework', 
+    
 ]
 
 MIDDLEWARE = [
@@ -123,3 +129,9 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'request_handler:dashboard'
+LOGOUT_REDIRECT_URL = 'request_handler:dashboard'
+
+EMAIL_HOST = "localhost"
+EMAIL_PORT = 1025

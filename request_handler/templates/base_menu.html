@@ -1,0 +1,45 @@
+{% extends "base_bootstrap.html" %}
+{% block navbar %}
+{% load app_tags %}
+<section class="navbar navbar-default navbar-static-top" role="navigation" style="align-items: center;">
+    <div class="container">
+
+         <div class="navbar-header">
+              <!-- lOGO TEXT HERE -->
+              <a href="#" class="navbar-brand">NLP Tool</a>
+         </div>
+
+         <!-- MENU LINKS -->
+         <ul class="nav navbar-nav">
+                   <li><a href="sentiment" class="smoothScroll">Sentiment Analysis</a></li>
+                   <li><a href="translation" class="smoothScroll">Translation</a></li>
+                   <li><a href="reverse_translation" class="smoothScroll">Reverse Translation</a></li>
+                   <li><a href="topic_model" class="smoothScroll">Topic Modeller</a></li>
+                   <li><a href="custom_topic" class="smoothScroll">Custom Topic Model</a></li>
+                   <li><a href="question_answering" class="smoothScroll">Question Answering </a></li>
+                   {% comment %} <li><a href="viewDataBase/" class="smoothScroll">View DataBase</a></li> {% endcomment %}
+         </ul>
+         <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+            <li>
+            <a href="{% url 'register' %}">Create Ad</a>
+            </li>
+            <li class="dropdown">
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                    <img style="width: 25px;" src="{{ user|gravatar:60 }}"/><b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'logout' %}?next={% url 'request_handler:dashboard' %}">Logout</a></li>
+                </ul>
+            </li>
+            {% else %}
+            <li>
+            <a href="{% url 'login' %}?next={% url 'request_handler:dashboard' %}">Login</a>
+            </li>
+            {% endif %}
+        </ul>
+
+
+    </div>
+</section>
+{% endblock %}
