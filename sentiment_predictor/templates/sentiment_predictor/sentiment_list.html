@@ -1,0 +1,40 @@
+{% extends "base_menu.html" %}
+{% load static %}
+{% block content %}
+<h2>Sentiment Analysis</h2>
+<div>
+{% if prediction_list %}
+<ul>
+  {% for prediction in prediction_list %}
+    <li>
+      <a href="{% url 'sentiment_predictor:prediction_detail'  prediction.id %}">{{ prediction.title }}</a>
+      <ul>
+        {% if prediction.owner == user %}
+        <li><a href="{% url 'sentiment_predictor:prediction_update' prediction.id %}">Edit</a></li> 
+        <li><a href="{% url 'sentiment_predictor:prediction_delete' prediction.id %}">Delete</a></li>
+        {% else %}
+        <li>Not Authorized to edit</li>
+        {% endif %}
+      </ul>  
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+  <p>There are no predictions in the database.</p>
+{% endif %}
+</div>
+<br>
+<br>
+<div>
+<a href="{% url 'sentiment_predictor:prediction_create' %}">Try the model</a><br>
+
+
+{% if user.is_authenticated %}
+<a href="{% url 'logout' %}?next={% url 'dashboard:dashboard' %}">Logout</a>
+{% else %}
+<a href="{% url 'login' %}?next={% url 'dashboard:dashboard' %}">Login</a>
+{% endif %}
+</div>
+
+
+{% endblock %}

@@ -22,8 +22,11 @@ from django.views.generic import TemplateView
 
 
 urlpatterns = [
-    path("", include("request_handler.urls")),
+    path("", include("dashboard.urls")),
     path("register/", include("register.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
-    path('admin/', admin.site.urls),  
+    path('admin/', admin.site.urls), 
+    path("predictsentiment/", include("sentiment_predictor.urls")), 
+    path('topic_model', include("topic_model.urls")),
+    
 ]

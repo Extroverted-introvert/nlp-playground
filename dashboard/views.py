@@ -7,4 +7,5 @@ from django.urls import reverse_lazy
 # Create your views here.
 class MainView(View):
     def get(self, request):
-        return render(request, "request_handler/dashboard.html")
+        return render(request, "dashboard/dashboard.html")
+

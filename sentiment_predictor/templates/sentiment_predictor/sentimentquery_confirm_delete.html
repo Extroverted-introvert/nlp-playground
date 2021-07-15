@@ -1,0 +1,12 @@
+{% extends "base_menu.html" %}
+{% load static %}
+{% block content %}
+<h1>Delete Prediction</h1>
+
+<p>Are you sure you want to delete the prediction: Made on {{ sentimentquery.title }}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" class="btn btn-primary" value="Yes, delete.">
+</form>
+{% endblock %}

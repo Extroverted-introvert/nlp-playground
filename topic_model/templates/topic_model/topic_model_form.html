@@ -1,0 +1,15 @@
+{% extends "base_menu.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h2>Topic Detector</h2>
+<br>
+<form action="" method="post" id="upload_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" value="Submit">
+    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'topic_model:all' %}';return false;">
+  </form>
+  <br>
+  {% endblock %}
+
+

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,8 +32,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'request_handler',
+    'dashboard',
     'register',
+    'sentiment_predictor',
+    'topic_model',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -130,8 +133,17 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'request_handler:dashboard'
-LOGOUT_REDIRECT_URL = 'request_handler:dashboard'
+LOGIN_REDIRECT_URL = 'dashboard:dashboard'
+LOGOUT_REDIRECT_URL = 'dashboard:dashboard'
 
 EMAIL_HOST = "localhost"
 EMAIL_PORT = 1025
+
+MODELS_DIR = os.path.join(BASE_DIR, 'models')
+SENTIMENT_MODEL_DIR = os.path.join(MODELS_DIR, 'sentimentAnalysis')
+TOPIC_MODELLING_DIR=os.path.join(MODELS_DIR, 'Topic_Modelling')
+CUSTOM_TOPIC_MODEL_DIR=os.path.join(MODELS_DIR, 'Custom_Topic_Model')
+CUSTOM_TOPIC_MODEL_NER_DIR=os.path.join(MODELS_DIR, 'Custom_Topic_Model_NER')
+TRANSLATION_MODEL_DIR=os.path.join(MODELS_DIR, 'translation')
+REVERSE_TRANSLATION_MODEL_DIR=os.path.join(MODELS_DIR, 'reverse_translation')
+QUESTION_ANSWERING_MODEL_DIR=os.path.join(MODELS_DIR, 'question_answering')

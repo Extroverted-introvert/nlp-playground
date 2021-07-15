@@ -6,15 +6,15 @@
 
          <div class="navbar-header">
               <!-- lOGO TEXT HERE -->
-              <a href="#" class="navbar-brand">NLP Tool</a>
+              <a href="{% url 'dashboard:dashboard' %}" class="navbar-brand">NLP Tool</a>
          </div>
 
          <!-- MENU LINKS -->
          <ul class="nav navbar-nav">
-                   <li><a href="sentiment" class="smoothScroll">Sentiment Analysis</a></li>
+                   <li><a href="{% url 'sentiment_predictor:all' %}" class="smoothScroll">Sentiment Analysis</a></li>
                    <li><a href="translation" class="smoothScroll">Translation</a></li>
                    <li><a href="reverse_translation" class="smoothScroll">Reverse Translation</a></li>
-                   <li><a href="topic_model" class="smoothScroll">Topic Modeller</a></li>
+                   <li><a href="{% url 'topic_model:all' %}" class="smoothScroll">Topic Modeller</a></li>
                    <li><a href="custom_topic" class="smoothScroll">Custom Topic Model</a></li>
                    <li><a href="question_answering" class="smoothScroll">Question Answering </a></li>
                    {% comment %} <li><a href="viewDataBase/" class="smoothScroll">View DataBase</a></li> {% endcomment %}
@@ -29,12 +29,12 @@
                     <img style="width: 25px;" src="{{ user|gravatar:60 }}"/><b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="{% url 'logout' %}?next={% url 'request_handler:dashboard' %}">Logout</a></li>
+                    <li><a href="{% url 'logout' %}?next={% url 'dashboard:dashboard' %}">Logout</a></li>
                 </ul>
             </li>
             {% else %}
             <li>
-            <a href="{% url 'login' %}?next={% url 'request_handler:dashboard' %}">Login</a>
+            <a href="{% url 'login' %}?next={% url 'dashboard:dashboard' %}">Login</a>
             </li>
             {% endif %}
         </ul>

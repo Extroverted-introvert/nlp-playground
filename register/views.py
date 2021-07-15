@@ -6,7 +6,7 @@ from register.forms import CustomUserCreationForm
 # Create your views here.
 
 def dashboard(request):
-    return render(request, "request_handler/dashboard.html")
+    return render(request, "dashboard/dashboard.html")
 
 def register(request):
     if request.method == "GET":
@@ -20,4 +20,4 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect(reverse("request_handler:dashboard"))
+            return redirect(reverse("dashboard:dashboard"))
