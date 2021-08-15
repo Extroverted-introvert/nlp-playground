@@ -11,7 +11,9 @@ stop_words = stopwords.words('english')
 stop_words.extend(['from', 'subject', 're', 'edu', 'use'])
 
 from topic_model.apps import TopicModelConfig
+from topic_model.models import DetectedTopics, TopicKeyword, TopicModelQuery
 
+from decimal import Decimal
 
 class Utils:
 
@@ -63,7 +65,7 @@ class Utils:
 
     def topic_modeller(self, input_text):
         index_list=[]
-        ot = self.preprocess(input_text,bigram_mod)
+        ot = self.preprocess(input_text[0])
         #print(ot)
         bow_vector = self._dictionary.doc2bow(ot)
         #print(bow_vector)
@@ -72,4 +74,36 @@ class Utils:
             temp = self._model_top.show_topic(index, 5)
             index_list.append((index,score,[i[0] for i in temp]))
         #print(index_list)
-        return index_list    
+        return index_list   
+
+    def save_predictions(self, query_id, index_list):
+        
+        try:   
+            for ele in index_list:
+                detected_topic = DetectedTopics(query_id = query_id, topic_index = ele[0], topic_name = 'Topic_%s' % ele[0],
+                    prediction_accuracy = Decimal(ele[1].item()))
+                detected_topic.save()
+                print(detected_topic.id) 
+
+                for keyword in ele[2]:
+                    detected_keyword = TopicKeyword(topic_id = detected_topic.id, topic_keyword =keyword)
+                    detected_keyword.save()
+            return True        
+        except:
+            return False
+
+    def update_predictions(self, query_id, index_list):
+        
+        try:   
+            for ele in index_list:
+                detected_topic = DetectedTopics(query_id = query_id, topic_index = ele[0], topic_name = 'Topic_%s' % ele[0],
+                    prediction_accuracy = Decimal(ele[1].item()))
+                detected_topic.save()
+                print(detected_topic.id) 
+
+                for keyword in ele[2]:
+                    detected_keyword = TopicKeyword(topic_id = detected_topic.id, topic_keyword =keyword)
+                    detected_keyword.save()
+            return True        
+        except:
+            return False       

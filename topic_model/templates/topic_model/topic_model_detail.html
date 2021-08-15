@@ -1,0 +1,39 @@
+{% extends "base_menu.html" %}
+
+{% block content %}
+<span style="float: right;">
+{% if qr.owner == user %}
+<a href="{% url 'topic_model:prediction_update' qr.id %}"><i class="fa fa-pencil"></i></a>
+<a href="{% url 'topic_model:prediction_delete' qr.id %}"><i class="fa fa-trash"></i></a>
+{% endif %}
+</span>
+<h3>{{ qr.title }}</h3>
+<p>
+Input text was : {{ qr.text }} <br>
+The topicmodel prediction is : <br>
+<hr>
+		<table class="table table-sm">
+				<tr>
+					<th>Topic</th>
+					<th>Topic Score</th>
+					<th>Topic Words</th>
+				</tr>
+				{% for ele in topic_detail_list %}
+
+				<tr>
+						<td>{{ele.topic.topic_name}}</td>
+						<td>{{ele.topic.prediction_accuracy}}</td>
+						<td>{{ele.keywords}}</td>
+				</tr>
+				{% endfor %}
+
+		</table>
+
+<!-- Accuracy Score : {{ topicmodelquery.prediction_score }} -->
+</p>
+<p>
+</p>
+<p>
+<a href="{% url 'topic_model:all' %}">All Predictions</a>
+</p>
+{% endblock %}

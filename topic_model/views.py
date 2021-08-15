@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 
-from topic_model.models import TopicModelQuery
+from topic_model.models import TopicModelQuery, DetectedTopics, TopicKeyword
 from topic_model.owner import OwnerListView, OwnerDetailView, OwnerDeleteView
 from topic_model.forms import TopicForm
 
@@ -31,17 +31,29 @@ class TopicModelListView(OwnerListView):
 
 
 class TopicModelDetailView(OwnerDetailView):
-    model = TopicModelQuery
-    template_name = "topic_model/topic_model_detail.html"
+    def get(self, request, pk):
+        print(request)
+        qr = TopicModelQuery.objects.get(id = pk)
+        tr = DetectedTopics.objects.filter(query_id = pk)
 
-
+        topic_detail_list =[]
+        for topic in tr:
+            kr = TopicKeyword.objects.filter(topic_id = topic.id)
+            topic_detail ={}
+            topic_detail['topic'] = topic
+            topic_detail['keywords'] = '\t'.join([ele.topic_keyword for ele in kr]) 
+            topic_detail_list.append(topic_detail)
+        ctx = {'qr': qr, 'tr': tr, 'topic_detail_list': topic_detail_list} 
+        return render(request, 'topic_model/topic_model_detail.html', ctx)
+  
+            
 class TopicModelCreateView(LoginRequiredMixin, View):
     template_name = 'topic_model/topic_model_form.html'
     success_url = reverse_lazy('topic_model:all')
     
     def __init__(self):
         self._utils = Utils()
-    
+        
 
     def get(self, request, pk=None):
         form = TopicForm()
@@ -54,25 +66,17 @@ class TopicModelCreateView(LoginRequiredMixin, View):
         if not form.is_valid():
             ctx = {'form': form}
             return render(request, self.template_name, ctx)
-
+        
         # Add owner to the model before saving
         query = form.save(commit=False)
         query.owner = self.request.user
         query.save()
-        return redirect(self.success_url)
+        query_id = (query.id)
 
-    def assign_prediction(self,prediction_score):
-        pred_score=prediction_score*100
-        sentiment = 'Negative'
-        if(pred_score>=20 and pred_score<40):
-            sentimentg = 'Poor'
-        elif(pred_score>=40 and pred_score<60):
-            sentiment = 'Average'
-        elif(pred_score>=60 and pred_score<80):
-            sentiment = 'Good'
-        elif(pred_score>=80):
-            sentiment = 'Positive' 
-        return sentiment
+        index_list = self._utils.topic_modeller([self.request.POST['text']])
+        print(index_list)
+        status = self._utils.save_predictions(query_id, index_list)
+        return redirect(self.success_url)
 
 
 class TopicModelUpdateView(LoginRequiredMixin, View):
@@ -80,7 +84,7 @@ class TopicModelUpdateView(LoginRequiredMixin, View):
     success_url = reverse_lazy('topic_model:all')
 
     def __init__(self):
-        self._sentiment_model = TopicModelConfig.sentiment_model
+        self._utils = Utils()
 
     def get(self, request, pk):
         query = get_object_or_404(TopicModelQuery, id=pk, owner=self.request.user)
@@ -97,25 +101,14 @@ class TopicModelUpdateView(LoginRequiredMixin, View):
             return render(request, self.template_name, ctx)
 
         query = form.save(commit=False)
-        prepared_text=np.array([self.request.POST['text']])
-        query.prediction_score = np.float64(self._sentiment_model.predict(prepared_text)[0][0]).item()
-        query.prediction = self.assign_prediction(query.prediction_score)
+        query.owner = self.request.user
         query.save()
-        return redirect(self.success_url)
+        query_id = (query.id)
 
-    def assign_prediction(self,prediction_score):
-        pred_score=prediction_score*100
-        sentiment = 'Negative'
-        if(pred_score>=20 and pred_score<40):
-            sentimentg = 'Poor'
-        elif(pred_score>=40 and pred_score<60):
-            sentiment = 'Average'
-        elif(pred_score>=60 and pred_score<80):
-            sentiment = 'Good'
-        elif(pred_score>=80):
-            sentiment = 'Positive' 
-        return sentiment
-    
+        index_list = self._utils.topic_modeller([self.request.POST['text']])
+        print(index_list)
+        status = self._utils.save_predictions(query_id, index_list)
+        return redirect(self.success_url)
 
 
 class TopicModelDeleteView(OwnerDeleteView):
